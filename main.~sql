@@ -87,8 +87,14 @@ START WITH 1000
 INCREMENT BY 1
 NOCACHE;
 
-CREATE SEQUENCE kolcsonzes_id_seq
+CREATE OR REPLACE SEQUENCE kolcsonzes_id_seq
 START WITH 3
 INCREMENT BY 1
 NOCACHE;
 
+SELECT * FROM beiratkozott_olvasok
+ORDER BY olvasoszam
+
+SELECT * FROM konyvek
+SELECT * FROM elojegyzesek
+SELECT * FROM kolcsonzesek

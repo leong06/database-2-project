@@ -10,3 +10,21 @@ BEGIN
         p_tagsag_kezdete => TO_DATE('2024-12-01', 'YYYY-MM-DD')
     );
 END;
+
+-- Könyv kölcsönzés procedure tesztelés
+-- 1. A könyv már elõ van jegyezve
+BEGIN
+    konyvek_pkg.kolcsonzes(
+        p_konyv_id => 1,
+        p_olvaso_id => 1001
+    );
+END;
+/
+
+-- 2. A könyv kölcsönözhetõ
+BEGIN
+    konyvek_pkg.kolcsonzes(
+        p_konyv_id => 2,
+        p_olvaso_id => 1001
+    );
+END;

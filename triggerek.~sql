@@ -9,11 +9,3 @@ BEGIN
     :NEW.olvasoszam := olvasoszam_seq.NEXTVAL;
 END;
 
--- Automatikus kölcsönzés id
-
-CREATE OR REPLACE TRIGGER trg_auto_kolcsonzes_id
-BEFORE INSERT ON kolcsonzesek
-FOR EACH ROW
-BEGIN
-    :NEW.kolcsonzes_id:= kolcsonzes_id_seq.NEXTVAL;
-END;
