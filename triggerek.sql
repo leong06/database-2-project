@@ -17,3 +17,13 @@ FOR EACH ROW
 BEGIN
     :NEW.kolcsonzes_id:= kolcsonzes_id_seq.NEXTVAL;
 END;
+
+
+-- Elõjegyzés id
+
+CREATE OR REPLACE TRIGGER trg_auto_elojegyzes_id
+BEFORE INSERT ON elojegyzesek
+FOR EACH ROW
+BEGIN
+    :NEW.elojegyzes_id:= elojegyzes_id_seq.NEXTVAL;
+END;

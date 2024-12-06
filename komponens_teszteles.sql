@@ -15,8 +15,8 @@ END;
 -- 1. A könyv már elõ van jegyezve
 BEGIN
     konyvek_pkg.kolcsonzes(
-        p_konyv_id => 1,
-        p_olvaso_id => 1001
+        p_konyv_id => 2,
+        p_olvaso_id => 1002
     );
 END;
 /
@@ -28,3 +28,30 @@ BEGIN
         p_olvaso_id => 1001
     );
 END;
+
+-- Könyv elõjegyzése
+
+BEGIN
+    konyvek_pkg.elojegyzes(
+        p_konyv_id => 2,
+        p_olvaso_id => 1001
+    );
+END;
+
+-- Könyv visszahozása:
+BEGIN
+    konyvek_pkg.visszahozas(
+        p_konyv_id => 2,
+        p_olvaso_id => 1001
+    );
+END;
+/
+
+
+
+SELECT * FROM kolcsonzesek
+
+
+
+
+
