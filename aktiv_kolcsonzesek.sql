@@ -21,7 +21,7 @@ BEGIN
     INSERT INTO AktualisKolcsonzesekTemp (cim, szerzo, mufaj, kiado, megjelenes_eve)
     SELECT k.cim, k.szerzo, k.mufaj, k.kiado, k.megjelenes_eve
     FROM Kolcsonzesek ko
-    JOIN Konyvek k ON ko.konyv_id = k.id
+    JOIN Konyvek k ON ko.konyv_id = k.konyv_id
     WHERE ko.kolcsonzo_olvaso = p_olvaso_szam
       AND ko.visszahozatal_idopont IS NULL;
 END AktualisKolcsonzesek;
@@ -34,4 +34,5 @@ BEGIN
 END;
 /
 
+SELECT * FROM Kolcsonzesek
 SELECT * FROM AktualisKolcsonzesekTemp;

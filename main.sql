@@ -83,7 +83,7 @@ CREATE TABLE tartozas (
 
 -- 6. Kölcsönzési elõzmények
 
-CREATE TABLE KolcsonzesiElozmenyek (
+CREATE TABLE kolcsonzesi_elozmenyek (
     id NUMBER PRIMARY KEY,
     olvaso_szam NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,

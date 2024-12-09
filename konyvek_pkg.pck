@@ -165,7 +165,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
       dbms_output.put_line('Hiba történt a könyv elõjegyzése során.');
   END elojegyzes;
 
-  -- 3. Könyv visszahozás
+  -- 3. Könyv visszahozás procedure
 
   PROCEDURE visszahozas(p_konyv_id  IN NUMBER
                        ,p_olvaso_id IN NUMBER) IS

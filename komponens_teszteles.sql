@@ -25,7 +25,7 @@ END;
 BEGIN
     konyvek_pkg.kolcsonzes(
         p_konyv_id => 2,
-        p_olvaso_id => 1001
+        p_olvaso_id => 1002
     );
 END;
 
@@ -42,7 +42,7 @@ END;
 BEGIN
     konyvek_pkg.visszahozas(
         p_konyv_id => 2,
-        p_olvaso_id => 1001
+        p_olvaso_id => 1002
     );
 END;
 /
@@ -50,7 +50,9 @@ END;
 
 
 SELECT * FROM kolcsonzesek
-
+SELECT * FROM elojegyzesek
+DELETE FROM elojegyzesek
+SELECT * FROM kolcsonzesi_elozmenyek
 
 
 
