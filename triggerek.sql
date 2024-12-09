@@ -34,7 +34,7 @@ CREATE OR REPLACE TRIGGER trg_kolcsonzesi_elozmeny_id
 BEFORE INSERT ON kolcsonzesi_elozmenyek
 FOR EACH ROW
 BEGIN
-    :NEW.id:= kolcsonzes_id_seq.NEXTVAL;
+    :NEW.id:= kolcsonzes_id_seq.currval;
 END;
 
 

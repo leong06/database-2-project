@@ -1,18 +1,24 @@
-create or replace procedure get_kolcsonzesi_elozmenyek(p_olvaso_szam IN NUMBER) is
-begin
+CREATE OR REPLACE PROCEDURE get_kolcsonzesi_elozmenyek(p_olvaso_szam IN NUMBER) IS
   BEGIN
-    DBMS_OUTPUT.PUT_LINE('Bejelentkezett olvasó: ' || p_olvaso_szam);
-    
-    FOR rec IN (
-        SELECT ke.kolcsonzes_idopont, ke.visszahozatal_idopont, k.cim, k.szerzo
-        FROM KolcsonzesiElmenyek ke
-        JOIN Konyvek k ON ke.konyv_id = k.konyv_id
-        WHERE ke.olvaso_szam = p_olvaso_szam
-        ORDER BY ke.kolcsonzes_idopont
-    ) LOOP
-        DBMS_OUTPUT.PUT_LINE('Könyv: ' || rec.cim || ' - ' || rec.szerzo ||
-                             ' | Kölcsönzés: ' || TO_CHAR(rec.kolcsonzes_idopont, 'YYYY-MM-DD') ||
-                             ' | Visszahozatal: ' || NVL(TO_CHAR(rec.visszahozatal_idopont, 'YYYY-MM-DD'), 'Nincs visszahozva'));
+    dbms_output.put_line('Bejelentkezett olvasó: ' || p_olvaso_szam);
+  
+    FOR rec IN (SELECT ke.kolcsonzes_idopont
+                      ,ke.visszahozatal_idopont
+                      ,k.cim
+                      ,k.szerzo
+                  FROM kolcsonzesi_elozmenyek ke
+                  JOIN konyvek k
+                    ON ke.konyv_id = k.konyv_id
+                 WHERE ke.olvaso_szam = p_olvaso_szam
+                 ORDER BY ke.kolcsonzes_idopont)
+    LOOP
+      dbms_output.put_line('Könyv: ' || rec.cim || ' - ' || rec.szerzo ||
+                           ' | Kölcsönzés: ' ||
+                           to_char(rec.kolcsonzes_idopont, 'YYYY-MM-DD') ||
+                           ' | Visszahozatal: ' ||
+                           nvl(to_char(rec.visszahozatal_idopont,
+                                       'YYYY-MM-DD'),
+                               'Nincs visszahozva'));
     END LOOP;
-end get_kolcsonzesi_elozmenyek;
+  END get_kolcsonzesi_elozmenyek;
 /
