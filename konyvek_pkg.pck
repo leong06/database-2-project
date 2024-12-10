@@ -104,12 +104,16 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
   EXCEPTION
     WHEN nincs_elerheto_peldany THEN
       dbms_output.put_line('Hiba: Nincs elérhetõ példány a könyvbõl.');
+      RAISE_APPLICATION_ERROR(-20001, 'Hiba: Nincs elérhetõ példány a könyvbõl.');
     WHEN elojegyzett_konyv THEN
       dbms_output.put_line('Hiba: A könyv elõjegyzett.');
+      RAISE_APPLICATION_ERROR(-20002, 'Hiba: A könyv elõjegyzett.');
     WHEN kolcsonzes_limit THEN
       dbms_output.put_line('Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
+      RAISE_APPLICATION_ERROR(-20003, 'Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
     WHEN magas_tartozas THEN
       dbms_output.put_line('Hiba: Az olvasó tartozása meghaladja az 5000 forintot.');
+      RAISE_APPLICATION_ERROR(-20004, 'Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
   END kolcsonzes;
 
   -- Elõjegyzés procedure
@@ -159,10 +163,13 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
   EXCEPTION
     WHEN ex_tartozas_tul_lepve THEN
       dbms_output.put_line('Nem jegyezhet elõ könyvet, mivel tartozása van!');
+      RAISE_APPLICATION_ERROR(-20005, 'Hiba: Nem jegyezhet elõ könyvet, mivel tartozása van!');
     WHEN ex_max_elojegyzes_tul_lepve THEN
       dbms_output.put_line('Nem jegyezhet elõ könyvet, mivel már három aktív elõjegyzése van!');
+      RAISE_APPLICATION_ERROR(-20006, 'Hiba: Nem jegyezhet elõ könyvet, mivel már három aktív elõjegyzése van!');
     WHEN OTHERS THEN
       dbms_output.put_line('Hiba történt a könyv elõjegyzése során.');
+      RAISE_APPLICATION_ERROR(-20007, 'Hiba történt a könyv elõjegyzése során.');
   END elojegyzes;
 
   -- 3. Könyv visszahozás procedure
@@ -228,6 +235,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
       RAISE ex_nem_kolcsonzott_konyv;
     WHEN ex_nem_kolcsonzott_konyv THEN
       dbms_output.put_line('Az adott olvasó nem kölcsönözte ki ezt a könyvet, vagy már visszahozta.');
+      RAISE_APPLICATION_ERROR(-20008, 'Hiba: Az adott olvasó nem kölcsönözte ki ezt a könyvet, vagy már visszahozta.');
     WHEN OTHERS THEN
       dbms_output.put_line('Hiba történt a könyv visszahozása során.');
   END visszahozas;

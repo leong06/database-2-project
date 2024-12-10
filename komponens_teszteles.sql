@@ -24,8 +24,8 @@ END;
 -- 2. A könyv kölcsönözhetõ
 BEGIN
     konyvek_pkg.kolcsonzes(
-        p_konyv_id => 2,
-        p_olvaso_id => 1002
+        p_konyv_id => 3,
+        p_olvaso_id => 1001
     );
 END;
 
@@ -53,7 +53,10 @@ SELECT * FROM kolcsonzesek
 SELECT * FROM elojegyzesek
 DELETE FROM elojegyzesek
 SELECT * FROM kolcsonzesi_elozmenyek
+SELECT * FROM tartozas
+SELECT * FROM konyvek
 
-
-
+BEGIN
+    tartozasok_pkg.tartozas_fizetes(1002, 1000); -- Olvasó azonosítójának megadása
+END;
 

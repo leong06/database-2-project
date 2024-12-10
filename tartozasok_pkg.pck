@@ -75,13 +75,11 @@ BEGIN
             EXIT;
         END IF;
 
-        -- Ha nincs több pénz, kilépünk
         IF v_remaining_amount = 0 THEN
             EXIT;
         END IF;
     END LOOP;
 
-    -- Ellenõrzés: Maradt-e befizetetlen összeg
     IF v_remaining_amount > 0 THEN
         DBMS_OUTPUT.PUT_LINE('A teljes tartozás kiegyenlítve. Maradék összeg: ' || v_remaining_amount || ' Ft visszajár.');
     ELSE
@@ -92,6 +90,7 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         DBMS_OUTPUT.PUT_LINE('Az olvasónak nincs tartozása.');
+        RAISE_APPLICATION_ERROR(-20010, 'Hiba: Az olvasónak nincs tartozása.');
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
 END tartozas_fizetes;
