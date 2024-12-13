@@ -9,6 +9,14 @@ BEGIN
     :NEW.olvasoszam := olvasoszam_seq.NEXTVAL;
 END;
 
+CREATE OR REPLACE TRIGGER trg_auto_olvasoid
+BEFORE INSERT ON beiratkozott_olvaso
+FOR EACH ROW
+BEGIN
+    :NEW.olvaso_id := olvasoid_seq.NEXTVAL;
+END;
+
+
 -- Automatikus kölcsönzés id
 
 CREATE OR REPLACE TRIGGER trg_auto_kolcsonzes_id
@@ -37,11 +45,19 @@ BEGIN
     :NEW.id:= kolcsonzes_id_seq.currval;
 END;
 
+-- Automatikus tartozás id
+
+CREATE OR REPLACE TRIGGER trg_auto_tartozasid
+BEFORE INSERT ON tartozas
+FOR EACH ROW
+BEGIN
+    :NEW.tartozas_id := tartozas_id_seq.NEXTVAL;
+END;
 
 
 -- Kölcsönzési elõzmények rögzítése
 
-CREATE OR REPLACE TRIGGER KolcsonzesiElozmenyek_Trigger
+CREATE OR REPLACE TRIGGER KolcsonzesiElozmeny_Trigger
 AFTER INSERT OR UPDATE ON kolcsonzes
 FOR EACH ROW
 BEGIN

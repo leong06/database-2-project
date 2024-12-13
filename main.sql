@@ -55,7 +55,7 @@ CREATE TABLE kolcsonzes (
     esedekesseg_idopont DATE NOT NULL,
     kolcsonzo_olvaso NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
-    CONSTRAINT fk_kolcsonzo_olvaso FOREIGN KEY (kolcsonzo_olvaso) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_kolcsonzo_olvaso FOREIGN KEY (kolcsonzo_olvaso) REFERENCES beiratkozott_olvaso(olvaso_id),
     CONSTRAINT fk_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE elojegyzes (
     foglalas_allapota VARCHAR2(20) CHECK (foglalas_allapota IN ('Aktív', 'Teljesült', 'Törölt')),
     teljesules_datum DATE,
     konyv_id NUMBER NOT NULL,
-    CONSTRAINT fk_foglalo_olvaso FOREIGN KEY (foglalo_olvaso) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_foglalo_olvaso FOREIGN KEY (foglalo_olvaso) REFERENCES beiratkozott_olvaso(olvaso_id),
     CONSTRAINT fk_elojegyzes_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE tartozas (
     konyv_id NUMBER NOT NULL,
     tartozas_merteke NUMBER NOT NULL CHECK (tartozas_merteke >= 0),
     tartozas_teljesulese DATE,
-    CONSTRAINT fk_tartozas_olvaso FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_tartozas_olvaso FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvaso(olvaso_id),
     CONSTRAINT fk_tartozas_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
@@ -86,17 +86,22 @@ CREATE TABLE tartozas (
 
 CREATE TABLE kolcsonzesi_elozmeny (
     id NUMBER PRIMARY KEY,
-    olvaso_szam NUMBER NOT NULL,
+    olvaso_id NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
     kolcsonzes_idopont DATE NOT NULL,
     visszahozatal_idopont DATE,
-    FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvaso(olvasoszam),
+    FOREIGN KEY (olvaso_id) REFERENCES beiratkozott_olvaso(olvaso_id),
     FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
 -- Szekvenciák létrehozása
 CREATE SEQUENCE olvasoszam_seq
 START WITH 1000
+INCREMENT BY 1
+NOCACHE;
+
+CREATE SEQUENCE olvasoid_seq
+START WITH 1
 INCREMENT BY 1
 NOCACHE;
 
