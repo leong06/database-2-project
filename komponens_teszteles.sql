@@ -60,3 +60,4 @@ BEGIN
     tartozasok_pkg.tartozas_fizetes(1002, 1000); -- Olvasó azonosítójának megadása
 END;
 
+

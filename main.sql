@@ -27,8 +27,9 @@ QUOTA UNLIMITED ON USERS;
 -- Táblák létrehozása
 
 -- 1. Beiratkozott olvasók
-CREATE TABLE beiratkozott_olvasok (
-    olvasoszam NUMBER PRIMARY KEY,
+CREATE TABLE beiratkozott_olvaso (
+    olvaso_id NUMBER PRIMARY KEY,
+    olvasoszam NUMBER,
     nev VARCHAR2(100) NOT NULL,
     email VARCHAR2(150) UNIQUE NOT NULL,
     telefonszam VARCHAR2(15),
@@ -36,7 +37,7 @@ CREATE TABLE beiratkozott_olvasok (
 );
 
 -- 2. Könyvek
-CREATE TABLE konyvek (
+CREATE TABLE konyv (
     konyv_id NUMBER PRIMARY KEY,
     cim VARCHAR2(200) NOT NULL,
     szerzo VARCHAR2(100) NOT NULL,
@@ -47,27 +48,27 @@ CREATE TABLE konyvek (
 );
 
 -- 3. Kölcsönzések
-CREATE TABLE kolcsonzesek (
+CREATE TABLE kolcsonzes (
     kolcsonzes_id NUMBER PRIMARY KEY,
     kolcsonzes_idopont DATE NOT NULL,
     visszahozatal_idopont DATE,
     esedekesseg_idopont DATE NOT NULL,
     kolcsonzo_olvaso NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
-    CONSTRAINT fk_kolcsonzo_olvaso FOREIGN KEY (kolcsonzo_olvaso) REFERENCES Beiratkozott_Olvasok(olvasoszam),
-    CONSTRAINT fk_konyv FOREIGN KEY (konyv_id) REFERENCES Konyvek(konyv_id)
+    CONSTRAINT fk_kolcsonzo_olvaso FOREIGN KEY (kolcsonzo_olvaso) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
 -- 4. Elõjegyzések
-CREATE TABLE elojegyzesek (
+CREATE TABLE elojegyzes (
     elojegyzes_id NUMBER PRIMARY KEY,
     foglalo_olvaso NUMBER NOT NULL,
     foglalas_datum DATE NOT NULL,
     foglalas_allapota VARCHAR2(20) CHECK (foglalas_allapota IN ('Aktív', 'Teljesült', 'Törölt')),
     teljesules_datum DATE,
     konyv_id NUMBER NOT NULL,
-    CONSTRAINT fk_foglalo_olvaso FOREIGN KEY (foglalo_olvaso) REFERENCES Beiratkozott_Olvasok(olvasoszam),
-    CONSTRAINT fk_elojegyzes_konyv FOREIGN KEY (konyv_id) REFERENCES Konyvek(konyv_id)
+    CONSTRAINT fk_foglalo_olvaso FOREIGN KEY (foglalo_olvaso) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_elojegyzes_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
 -- 5. Tartozás
@@ -77,35 +78,45 @@ CREATE TABLE tartozas (
     konyv_id NUMBER NOT NULL,
     tartozas_merteke NUMBER NOT NULL CHECK (tartozas_merteke >= 0),
     tartozas_teljesulese DATE,
-    CONSTRAINT fk_tartozas_olvaso FOREIGN KEY (olvaso_szam) REFERENCES Beiratkozott_Olvasok(olvasoszam),
-    CONSTRAINT fk_tartozas_konyv FOREIGN KEY (konyv_id) REFERENCES Konyvek(konyv_id)
+    CONSTRAINT fk_tartozas_olvaso FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvaso(olvasoszam),
+    CONSTRAINT fk_tartozas_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
 -- 6. Kölcsönzési elõzmények
 
-CREATE TABLE kolcsonzesi_elozmenyek (
+CREATE TABLE kolcsonzesi_elozmeny (
     id NUMBER PRIMARY KEY,
     olvaso_szam NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
     kolcsonzes_idopont DATE NOT NULL,
     visszahozatal_idopont DATE,
-    FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvasok(olvasoszam),
-    FOREIGN KEY (konyv_id) REFERENCES Konyvek(konyv_id)
+    FOREIGN KEY (olvaso_szam) REFERENCES beiratkozott_olvaso(olvasoszam),
+    FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
 
--- Szekvencia létrehozása
+-- Szekvenciák létrehozása
 CREATE SEQUENCE olvasoszam_seq
 START WITH 1000
 INCREMENT BY 1
 NOCACHE;
 
 CREATE SEQUENCE kolcsonzes_id_seq
-START WITH 3
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+CREATE SEQUENCE konyv_id_seq
+START WITH 1
 INCREMENT BY 1
 NOCACHE;
 
 CREATE SEQUENCE elojegyzes_id_seq
-START WITH 3
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+CREATE SEQUENCE tartozas_id_seq
+START WITH 1
 INCREMENT BY 1
 NOCACHE;
 
