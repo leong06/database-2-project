@@ -55,6 +55,7 @@ CREATE TABLE kolcsonzes (
     esedekesseg_idopont DATE NOT NULL,
     kolcsonzo_olvaso NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
+    kolcsonozve CHAR(1) DEFAULT 'I' NOT NULL, -- I: Kölcsönözve van, N: Nincs kikölcsönözve jelenleg
     CONSTRAINT fk_kolcsonzo_olvaso FOREIGN KEY (kolcsonzo_olvaso) REFERENCES beiratkozott_olvaso(olvaso_id),
     CONSTRAINT fk_konyv FOREIGN KEY (konyv_id) REFERENCES konyv(konyv_id)
 );
