@@ -36,15 +36,6 @@ BEGIN
     :NEW.elojegyzes_id:= elojegyzes_id_seq.NEXTVAL;
 END;
 
--- ID átmásolása a kölcsönzési elõzményekbe
-
-CREATE OR REPLACE TRIGGER trg_kolcsonzesi_elozmeny_id
-BEFORE INSERT ON kolcsonzesi_elozmeny
-FOR EACH ROW
-BEGIN
-    :NEW.id:= kolcsonzes_id_seq.currval;
-END;
-
 -- Automatikus tartozás id
 
 CREATE OR REPLACE TRIGGER trg_auto_tartozasid
@@ -52,27 +43,4 @@ BEFORE INSERT ON tartozas
 FOR EACH ROW
 BEGIN
     :NEW.tartozas_id := tartozas_id_seq.NEXTVAL;
-END;
-
-
--- Kölcsönzési elõzmények rögzítése
-
-CREATE OR REPLACE TRIGGER KolcsonzesiElozmeny_Trigger
-AFTER INSERT OR UPDATE ON kolcsonzes
-FOR EACH ROW
-BEGIN
-    -- Könyv kikölcsönzése esetén
-    IF INSERTING THEN
-        INSERT INTO kolcsonzesi_elozmeny (olvaso_szam, konyv_id, kolcsonzes_idopont)
-        VALUES (:NEW.kolcsonzo_olvaso, :NEW.konyv_id, :NEW.kolcsonzes_idopont);
-    END IF;
-
-    -- Könyv visszahozása esetén
-    IF UPDATING AND :NEW.visszahozatal_idopont IS NOT NULL THEN
-        UPDATE kolcsonzesi_elozmeny
-        SET visszahozatal_idopont = :NEW.visszahozatal_idopont
-        WHERE olvaso_szam = :NEW.kolcsonzo_olvaso
-          AND konyv_id = :NEW.konyv_id
-          AND visszahozatal_idopont IS NULL;
-    END IF;
 END;

@@ -85,7 +85,6 @@ CREATE TABLE tartozas (
 -- 6. Kölcsönzési elõzmények
 
 CREATE TABLE kolcsonzesi_elozmeny (
-    id NUMBER PRIMARY KEY,
     olvaso_id NUMBER NOT NULL,
     konyv_id NUMBER NOT NULL,
     kolcsonzes_idopont DATE NOT NULL,
