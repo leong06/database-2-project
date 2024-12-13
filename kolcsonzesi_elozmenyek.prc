@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE get_kolcsonzesi_elozmenyek(p_olvaso_szam IN NUMBER) IS
+CREATE OR REPLACE PROCEDURE get_kolcsonzesi_elozmeny(p_olvaso_szam IN NUMBER) IS
   BEGIN
     dbms_output.put_line('Bejelentkezett olvasó: ' || p_olvaso_szam);
   
@@ -6,8 +6,8 @@ CREATE OR REPLACE PROCEDURE get_kolcsonzesi_elozmenyek(p_olvaso_szam IN NUMBER) 
                       ,ke.visszahozatal_idopont
                       ,k.cim
                       ,k.szerzo
-                  FROM kolcsonzesi_elozmenyek ke
-                  JOIN konyvek k
+                  FROM kolcsonzesi_elozmeny ke
+                  JOIN konyv k
                     ON ke.konyv_id = k.konyv_id
                  WHERE ke.olvaso_szam = p_olvaso_szam
                  ORDER BY ke.kolcsonzes_idopont)
@@ -20,5 +20,5 @@ CREATE OR REPLACE PROCEDURE get_kolcsonzesi_elozmenyek(p_olvaso_szam IN NUMBER) 
                                        'YYYY-MM-DD'),
                                'Nincs visszahozva'));
     END LOOP;
-  END get_kolcsonzesi_elozmenyek;
+  END get_kolcsonzesi_elozmeny;
 /

@@ -1,24 +1,22 @@
-create or replace package tartozasok_pkg is
+CREATE OR REPLACE PACKAGE tartozas_pkg IS
 
-PROCEDURE get_tartozasok(p_olvaso_szam IN NUMBER);
-PROCEDURE tartozas_fizetes(
-    p_olvaso_szam IN NUMBER,
-    p_fizetett_osszeg IN NUMBER
-);
+  PROCEDURE get_tartozas(p_olvaso_szam IN NUMBER);
+  PROCEDURE tartozas_fizetes(p_olvaso_szam     IN NUMBER
+                            ,p_fizetett_osszeg IN NUMBER);
 
-end tartozasok_pkg;
+END tartozas_pkg;
 /
-CREATE OR REPLACE PACKAGE BODY tartozasok_pkg IS
+CREATE OR REPLACE PACKAGE BODY tartozas_pkg IS
 
 -- Függõ tartozások lekérése procedure
 
-PROCEDURE get_tartozasok(p_olvaso_szam IN NUMBER) IS
+PROCEDURE get_tartozas(p_olvaso_szam IN NUMBER) IS
     v_total_tartozas NUMBER := 0;
 BEGIN
   
     SELECT SUM(t.tartozas_merteke)
     INTO v_total_tartozas
-    FROM Tartozas t
+    FROM tartozas t
     WHERE t.olvaso_szam = p_olvaso_szam
       AND t.tartozas_teljesulese IS NULL;
 
@@ -27,12 +25,13 @@ BEGIN
     ELSE
         DBMS_OUTPUT.PUT_LINE('Az olvasó tartozásainak összege: ' || v_total_tartozas || ' Ft');
     END IF;
+    
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         DBMS_OUTPUT.PUT_LINE('Az olvasó nem található.');
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-END get_tartozasok;
+END get_tartozas;
 
 -- Tartozás befizetése procedure
 
@@ -95,5 +94,5 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
 END tartozas_fizetes;
 
-END tartozasok_pkg;
+END tartozas_pkg;
 /

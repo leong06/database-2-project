@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE konyvek_pkg IS
+CREATE OR REPLACE PACKAGE konyv_pkg IS
   -- Kivételek
   nincs_elerheto_peldany      EXCEPTION;
   elojegyzett_konyv           EXCEPTION;
@@ -17,9 +17,9 @@ CREATE OR REPLACE PACKAGE konyvek_pkg IS
   PROCEDURE visszahozas(p_konyv_id  IN NUMBER
                        ,p_olvaso_id IN NUMBER);
 
-END konyvek_pkg;
+END konyv_pkg;
 /
-CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
+CREATE OR REPLACE PACKAGE BODY konyv_pkg IS
 
   -- Kölcsönzés procedure
 
@@ -35,7 +35,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
   
     SELECT elerheto_peldanyszam
       INTO lv_elerheto_peldany
-      FROM konyvek
+      FROM konyv
      WHERE konyv_id = p_konyv_id;
   
     IF lv_elerheto_peldany <= 0
@@ -47,7 +47,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
   
     SELECT COUNT(*)
       INTO lv_elojegyzes
-      FROM elojegyzesek
+      FROM elojegyzes
      WHERE konyv_id = p_konyv_id
        AND foglalas_allapota = 'Aktív';
   
@@ -60,7 +60,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
   
     SELECT COUNT(*)
       INTO lv_kolcsonzott_peldanyok
-      FROM kolcsonzesek
+      FROM kolcsonzes
      WHERE kolcsonzo_olvaso = p_olvaso_id
        AND visszahozatal_idopont IS NULL;
   
@@ -83,7 +83,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
     END IF;
   
     -- Kölcsönzés
-    INSERT INTO kolcsonzesek
+    INSERT INTO kolcsonzes
       (konyv_id
       ,kolcsonzo_olvaso
       ,kolcsonzes_idopont
@@ -94,7 +94,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
       ,SYSDATE
       ,SYSDATE + 30);
   
-    UPDATE konyvek
+    UPDATE konyv
        SET elerheto_peldanyszam = elerheto_peldanyszam - 1
      WHERE konyv_id = p_konyv_id;
   
@@ -103,16 +103,12 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
     -- Kivételkezelés
   EXCEPTION
     WHEN nincs_elerheto_peldany THEN
-      dbms_output.put_line('Hiba: Nincs elérhetõ példány a könyvbõl.');
       RAISE_APPLICATION_ERROR(-20001, 'Hiba: Nincs elérhetõ példány a könyvbõl.');
     WHEN elojegyzett_konyv THEN
-      dbms_output.put_line('Hiba: A könyv elõjegyzett.');
       RAISE_APPLICATION_ERROR(-20002, 'Hiba: A könyv elõjegyzett.');
     WHEN kolcsonzes_limit THEN
-      dbms_output.put_line('Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
       RAISE_APPLICATION_ERROR(-20003, 'Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
     WHEN magas_tartozas THEN
-      dbms_output.put_line('Hiba: Az olvasó tartozása meghaladja az 5000 forintot.');
       RAISE_APPLICATION_ERROR(-20004, 'Hiba: Az olvasó elérte a maximális kölcsönözhetõ könyvek számát.');
   END kolcsonzes;
 
@@ -138,7 +134,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
     -- Ellenõrzés: Aktív elõjegyzések száma
     SELECT COUNT(*)
       INTO v_aktiv_elojegyzesek
-      FROM elojegyzesek
+      FROM elojegyzes
      WHERE foglalo_olvaso = p_olvaso_id
        AND foglalas_allapota = 'Aktív';
   
@@ -148,7 +144,7 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
     END IF;
   
     -- Könyv elõjegyzése
-    INSERT INTO elojegyzesek
+    INSERT INTO elojegyzes
       (foglalo_olvaso
       ,foglalas_datum
       ,foglalas_allapota
@@ -160,15 +156,13 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
       ,p_konyv_id);
   
     dbms_output.put_line('Könyv elõjegyzése sikeresen megtörtént.');
+    
   EXCEPTION
     WHEN ex_tartozas_tul_lepve THEN
-      dbms_output.put_line('Nem jegyezhet elõ könyvet, mivel tartozása van!');
       RAISE_APPLICATION_ERROR(-20005, 'Hiba: Nem jegyezhet elõ könyvet, mivel tartozása van!');
     WHEN ex_max_elojegyzes_tul_lepve THEN
-      dbms_output.put_line('Nem jegyezhet elõ könyvet, mivel már három aktív elõjegyzése van!');
       RAISE_APPLICATION_ERROR(-20006, 'Hiba: Nem jegyezhet elõ könyvet, mivel már három aktív elõjegyzése van!');
     WHEN OTHERS THEN
-      dbms_output.put_line('Hiba történt a könyv elõjegyzése során.');
       RAISE_APPLICATION_ERROR(-20007, 'Hiba történt a könyv elõjegyzése során.');
   END elojegyzes;
 
@@ -196,17 +190,17 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
       v_kesedelmi_napok := v_visszahozatal_datum - v_esedekesseg_datum;
     END IF;
   
-    UPDATE kolcsonzesek
+    UPDATE kolcsonzes
        SET visszahozatal_idopont = v_visszahozatal_datum
      WHERE konyv_id = p_konyv_id
        AND kolcsonzo_olvaso = p_olvaso_id;
   
     SELECT elerheto_peldanyszam
       INTO v_elerheto_peldanyszam
-      FROM konyvek
+      FROM konyv
      WHERE konyv_id = p_konyv_id;
   
-    UPDATE konyvek
+    UPDATE konyv
        SET elerheto_peldanyszam = v_elerheto_peldanyszam + 1
      WHERE konyv_id = p_konyv_id;
   
@@ -234,11 +228,10 @@ CREATE OR REPLACE PACKAGE BODY konyvek_pkg IS
     WHEN no_data_found THEN
       RAISE ex_nem_kolcsonzott_konyv;
     WHEN ex_nem_kolcsonzott_konyv THEN
-      dbms_output.put_line('Az adott olvasó nem kölcsönözte ki ezt a könyvet, vagy már visszahozta.');
       RAISE_APPLICATION_ERROR(-20008, 'Hiba: Az adott olvasó nem kölcsönözte ki ezt a könyvet, vagy már visszahozta.');
     WHEN OTHERS THEN
       dbms_output.put_line('Hiba történt a könyv visszahozása során.');
   END visszahozas;
 
-END konyvek_pkg;
+END konyv_pkg;
 /
