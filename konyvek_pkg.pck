@@ -230,7 +230,7 @@ CREATE OR REPLACE PACKAGE BODY konyv_pkg IS
     WHEN ex_nem_kolcsonzott_konyv THEN
       RAISE_APPLICATION_ERROR(-20008, 'Hiba: Az adott olvasó nem kölcsönözte ki ezt a könyvet, vagy már visszahozta.');
     WHEN OTHERS THEN
-      dbms_output.put_line('Hiba történt a könyv visszahozása során.');
+      RAISE_APPLICATION_ERROR(-20001, 'Hiba történt a könyv visszahozása során.');
   END visszahozas;
 
 END konyv_pkg;

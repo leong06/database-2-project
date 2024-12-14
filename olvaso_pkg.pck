@@ -16,6 +16,7 @@ CREATE OR REPLACE PACKAGE olvaso_pkg IS
   PROCEDURE get_kolcsonzesi_elozmeny(p_olvaso_szam IN NUMBER, p_elozmeny OUT KolcsonzesiElozmenyList);
   PROCEDURE HandleInsert(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, kolcsonzes_idopont IN DATE);
   PROCEDURE HandleUpdate(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, visszahozatal_idopont IN DATE);
+  PROCEDURE AktualisKolcsonzesek(p_olvaso_szam IN NUMBER);
   
 END olvaso_pkg;
 /
@@ -85,6 +86,26 @@ PROCEDURE HandleUpdate(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, visszahoz
           AND konyv_id = konyv_id
           AND visszahozatal_idopont IS NULL;
     END HandleUpdate;
+
+-- Aktív kölcsönzések lekérése
+PROCEDURE AktualisKolcsonzesek(
+    p_olvaso_szam IN NUMBER
+) IS
+    CURSOR kolcsonzes_cursor IS
+        SELECT k.cim, k.szerzo, k.mufaj, k.kiado, k.megjelenes_eve
+        FROM Kolcsonzes ko
+        JOIN Konyv k ON ko.konyv_id = k.konyv_id
+        WHERE ko.kolcsonzo_olvaso = p_olvaso_szam
+          AND ko.kolcsonozve = 'I';
+BEGIN
+    FOR kolcsonzes_rec IN kolcsonzes_cursor LOOP
+        DBMS_OUTPUT.PUT_LINE('Cím: ' || kolcsonzes_rec.cim ||
+                             ', Szerzõ: ' || kolcsonzes_rec.szerzo ||
+                             ', Mûfaj: ' || kolcsonzes_rec.mufaj ||
+                             ', Kiadó: ' || kolcsonzes_rec.kiado ||
+                             ', Megjelenés éve: ' || kolcsonzes_rec.megjelenes_eve);
+    END LOOP;
+END AktualisKolcsonzesek;
 
 
 END olvaso_pkg;

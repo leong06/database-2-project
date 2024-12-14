@@ -10,27 +10,30 @@ CREATE OR REPLACE PACKAGE BODY tartozas_pkg IS
 
 -- Függõ tartozások lekérése procedure
 
-PROCEDURE get_tartozas(p_olvaso_szam IN NUMBER) IS
-    v_total_tartozas NUMBER := 0;
+CREATE OR REPLACE FUNCTION get_tartozas(p_olvaso_szam IN NUMBER) RETURN NUMBER IS
+    v_total_tartozas NUMBER;
 BEGIN
-  
+    -- Összes tartozás lekérdezése
     SELECT SUM(t.tartozas_merteke)
     INTO v_total_tartozas
     FROM tartozas t
     WHERE t.olvaso_szam = p_olvaso_szam
       AND t.tartozas_teljesulese IS NULL;
 
+    -- Ha nincs tartozás, térjen vissza 0-val
     IF v_total_tartozas IS NULL THEN
-        DBMS_OUTPUT.PUT_LINE('Az olvasónak nincs tartozása.');
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('Az olvasó tartozásainak összege: ' || v_total_tartozas || ' Ft');
+        RETURN 0;
     END IF;
-    
+
+    RETURN v_total_tartozas;
+
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Az olvasó nem található.');
+        -- Ha az olvasó nem található, térjen vissza 0-val
+        RETURN 0;
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        -- Ha egyéb hiba történt, dobja tovább a hibát
+        RAISE;
 END get_tartozas;
 
 -- Tartozás befizetése procedure
@@ -91,7 +94,7 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Az olvasónak nincs tartozása.');
         RAISE_APPLICATION_ERROR(-20010, 'Hiba: Az olvasónak nincs tartozása.');
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+      RAISE_APPLICATION_ERROR(-20001, 'Hiba történt a tartozás kifizetése során.');
 END tartozas_fizetes;
 
 END tartozas_pkg;
