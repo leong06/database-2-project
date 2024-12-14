@@ -56,8 +56,5 @@ SELECT * FROM kolcsonzesi_elozmenyek
 SELECT * FROM tartozas
 SELECT * FROM konyvek
 
-BEGIN
-    tartozasok_pkg.tartozas_fizetes(1002, 1000); -- Olvasó azonosítójának megadása
-END;
 
 

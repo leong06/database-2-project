@@ -63,19 +63,22 @@ FOR EACH ROW
 BEGIN
     -- Könyv kikölcsönzése esetén
     IF INSERTING THEN
-        INSERT INTO kolcsonzesi_elozmeny (olvaso_szam, konyv_id, kolcsonzes_idopont)
-        VALUES (:NEW.kolcsonzo_olvaso, :NEW.konyv_id, :NEW.kolcsonzes_idopont);
+        olvaso_pkg.HandleInsert(
+            kolcsonzo_olvaso => :NEW.kolcsonzo_olvaso,
+            konyv_id => :NEW.konyv_id,
+            kolcsonzes_idopont => :NEW.kolcsonzes_idopont
+        );
     END IF;
 
     -- Könyv visszahozása esetén
     IF UPDATING AND :NEW.visszahozatal_idopont IS NOT NULL THEN
-        UPDATE kolcsonzesi_elozmeny
-        SET visszahozatal_idopont = :NEW.visszahozatal_idopont
-        WHERE olvaso_szam = :NEW.kolcsonzo_olvaso
-          AND konyv_id = :NEW.konyv_id
-          AND visszahozatal_idopont IS NULL;
+        olvaso_pkg.HandleUpdate(
+            kolcsonzo_olvaso => :NEW.kolcsonzo_olvaso,
+            konyv_id => :NEW.konyv_id,
+            visszahozatal_idopont => :NEW.visszahozatal_idopont
+        );
     END IF;
-END;
+END KolcsonzesiElozmeny_Trigger;
 
 -- Kölcsönzés állapota frissítése
 CREATE OR REPLACE TRIGGER UpdateKolcsozve

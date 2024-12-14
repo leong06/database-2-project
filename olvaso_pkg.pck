@@ -53,6 +53,24 @@ PROCEDURE get_kolcsonzesi_elozmeny(p_olvaso_szam IN NUMBER) IS
     END LOOP;
   END get_kolcsonzesi_elozmeny;
 
+-- Kölcsönzési elõzmények rögzítése
+
+-- Insert esetén
+PROCEDURE HandleInsert(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, kolcsonzes_idopont IN DATE) IS
+    BEGIN
+        INSERT INTO kolcsonzesi_elozmeny (olvaso_szam, konyv_id, kolcsonzes_idopont)
+        VALUES (kolcsonzo_olvaso, konyv_id, kolcsonzes_idopont);
+    END HandleInsert;
+
+-- Update esetén
+PROCEDURE HandleUpdate(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, visszahozatal_idopont IN DATE) IS
+    BEGIN
+        UPDATE kolcsonzesi_elozmeny
+        SET visszahozatal_idopont = visszahozatal_idopont
+        WHERE olvaso_szam = kolcsonzo_olvaso
+          AND konyv_id = konyv_id
+          AND visszahozatal_idopont IS NULL;
+    END HandleUpdate;
 
 
 END olvaso_pkg;
