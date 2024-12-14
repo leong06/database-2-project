@@ -47,6 +47,15 @@ BEGIN
 END;
 /
 
+-- Olvasó tartozásának lekérése
+DECLARE
+    v_tartozas NUMBER;
+BEGIN
+    v_tartozas := get_tartozas(1);
+    DBMS_OUTPUT.PUT_LINE('Az olvasó tartozása: ' || v_tartozas || ' Ft');
+END;
+/
+
 
 
 SELECT * FROM kolcsonzesek
