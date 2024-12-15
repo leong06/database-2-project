@@ -25,7 +25,6 @@ BEGIN
 END;
 
 
-
 -- Automatikus kölcsönzés id
 
 CREATE OR REPLACE TRIGGER trg_auto_kolcsonzes_id
@@ -56,7 +55,7 @@ END;
 
 
 -- Kölcsönzési elõzmények rögzítése
--- Át kell tenni ide az olvaso_pkg-bõl a logikát
+
 
 CREATE OR REPLACE TRIGGER KolcsonzesiElozmeny_Trigger
 AFTER INSERT OR UPDATE ON kolcsonzes
