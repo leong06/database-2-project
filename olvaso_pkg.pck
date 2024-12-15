@@ -1,5 +1,5 @@
 CREATE OR REPLACE PACKAGE olvaso_pkg IS
-  TYPE KolcsonzesiElozmenyType IS RECORD (
+  TYPE KolcsonzesiElozmenyType IS OBJECT (
         cim VARCHAR2(255),
         szerzo VARCHAR2(255),
         kolcsonzes_idopont DATE,
@@ -50,12 +50,12 @@ PROCEDURE get_kolcsonzesi_elozmeny(
     ) IS
     BEGIN
         -- Eredmények begyûjtése
-        SELECT KolcsonzesiElozmenyRecord(k.cim, k.szerzo, ke.kolcsonzes_idopont, ke.visszahozatal_idopont)
+        SELECT KolcsonzesiElozmenyType(k.cim, k.szerzo, ke.kolcsonzes_idopont, ke.visszahozatal_idopont)
         BULK COLLECT INTO p_elozmeny
         FROM kolcsonzesi_elozmeny ke
         JOIN konyv k
           ON ke.konyv_id = k.konyv_id
-        WHERE ke.olvaso_szam = p_olvaso_szam
+        WHERE ke.olvaso_id = p_olvaso_szam
         ORDER BY ke.kolcsonzes_idopont;
 
         FOR i IN 1..p_elozmeny.COUNT LOOP
@@ -73,7 +73,7 @@ PROCEDURE get_kolcsonzesi_elozmeny(
 -- Insert esetén
 PROCEDURE HandleInsert(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, kolcsonzes_idopont IN DATE) IS
     BEGIN
-        INSERT INTO kolcsonzesi_elozmeny (olvaso_szam, konyv_id, kolcsonzes_idopont)
+        INSERT INTO kolcsonzesi_elozmeny (olvaso_id, konyv_id, kolcsonzes_idopont)
         VALUES (kolcsonzo_olvaso, konyv_id, kolcsonzes_idopont);
     END HandleInsert;
 
@@ -82,7 +82,7 @@ PROCEDURE HandleUpdate(kolcsonzo_olvaso IN NUMBER, konyv_id IN NUMBER, visszahoz
     BEGIN
         UPDATE kolcsonzesi_elozmeny
         SET visszahozatal_idopont = visszahozatal_idopont
-        WHERE olvaso_szam = kolcsonzo_olvaso
+        WHERE olvaso_id = kolcsonzo_olvaso
           AND konyv_id = konyv_id
           AND visszahozatal_idopont IS NULL;
     END HandleUpdate;

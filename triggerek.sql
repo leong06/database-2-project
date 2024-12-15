@@ -16,6 +16,15 @@ BEGIN
     :NEW.olvaso_id := olvasoid_seq.NEXTVAL;
 END;
 
+-- Automatikus könyv id
+CREATE OR REPLACE TRIGGER trg_auto_konyvid
+BEFORE INSERT ON konyv
+FOR EACH ROW
+BEGIN
+    :NEW.konyv_id := konyv_id_seq.NEXTVAL;
+END;
+
+
 
 -- Automatikus kölcsönzés id
 
@@ -36,15 +45,6 @@ BEGIN
     :NEW.elojegyzes_id:= elojegyzes_id_seq.NEXTVAL;
 END;
 
--- ID átmásolása a kölcsönzési elõzményekbe
-
-CREATE OR REPLACE TRIGGER trg_kolcsonzesi_elozmeny_id
-BEFORE INSERT ON kolcsonzesi_elozmeny
-FOR EACH ROW
-BEGIN
-    :NEW.id:= kolcsonzes_id_seq.currval;
-END;
-
 -- Automatikus tartozás id
 
 CREATE OR REPLACE TRIGGER trg_auto_tartozasid
@@ -56,6 +56,7 @@ END;
 
 
 -- Kölcsönzési elõzmények rögzítése
+-- Át kell tenni ide az olvaso_pkg-bõl a logikát
 
 CREATE OR REPLACE TRIGGER KolcsonzesiElozmeny_Trigger
 AFTER INSERT OR UPDATE ON kolcsonzes

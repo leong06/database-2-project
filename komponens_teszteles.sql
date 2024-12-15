@@ -63,7 +63,8 @@ SELECT * FROM elojegyzesek
 DELETE FROM elojegyzesek
 SELECT * FROM kolcsonzesi_elozmenyek
 SELECT * FROM tartozas
-SELECT * FROM konyvek
+SELECT * FROM konyv
+SELECT * FROM beiratkozott_olvaso
 
 
 

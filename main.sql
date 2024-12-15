@@ -17,6 +17,14 @@ GRANT CREATE PROCEDURE TO konyvtaros;
 GRANT CREATE TRIGGER TO konyvtaros;
 GRANT CREATE TYPE TO konyvtaros;
 
+AUDIT INSERT, UPDATE, DELETE ON beiratkozott_olvaso;
+
+SELECT * FROM DBA_OBJ_AUDIT_OPTS WHERE OBJECT_NAME = 'beiratkozott_olvaso';
+
+SELECT *
+FROM USER_AUDIT_TRAIL
+WHERE SQL_TEXT LIKE '%beiratkozott_olvaso%';
+
 -- 2. : Olvasó (Read-only)
 
 CREATE USER olvaso
