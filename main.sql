@@ -133,3 +133,13 @@ START WITH 1
 INCREMENT BY 1
 NOCACHE;
 
+-- Típus létrehozása a kölcsönzési elõzményhez
+CREATE OR REPLACE TYPE KolcsonzesiElozmenyType AS OBJECT (
+    cim VARCHAR2(255),
+    szerzo VARCHAR2(255),
+    kolcsonzes_idopont DATE,
+    visszahozatal_idopont DATE
+);
+
+CREATE OR REPLACE TYPE KolcsonzesiElozmenyList AS TABLE OF KolcsonzesiElozmenyType;
+

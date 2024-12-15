@@ -16,18 +16,18 @@ VALUES ('Száz év magány', 'Gabriel García Márquez', 'Irodalmi', 'Magvetõ', 1967,
 
 -- Teszt adatok a Kölcsönzések táblához
 INSERT INTO kolcsonzes (kolcsonzes_idopont, visszahozatal_idopont, esedekesseg_idopont, kolcsonzo_olvaso, konyv_id)
-VALUES (TO_DATE('2024-11-01', 'YYYY-MM-DD'), TO_DATE('2024-11-10', 'YYYY-MM-DD'), TO_DATE('2024-11-15', 'YYYY-MM-DD'), 1000, 1);
+VALUES (TO_DATE('2024-11-01', 'YYYY-MM-DD'), TO_DATE('2024-11-10', 'YYYY-MM-DD'), TO_DATE('2024-11-15', 'YYYY-MM-DD'), 1, 1);
 INSERT INTO kolcsonzes (kolcsonzes_id, kolcsonzes_idopont, visszahozatal_idopont, esedekesseg_idopont, kolcsonzo_olvaso, konyv_id)
-VALUES (TO_DATE('2024-10-15', 'YYYY-MM-DD'), TO_DATE('2024-10-25', 'YYYY-MM-DD'), TO_DATE('2024-10-30', 'YYYY-MM-DD'), 1001, 2);
+VALUES (TO_DATE('2024-10-15', 'YYYY-MM-DD'), TO_DATE('2024-10-25', 'YYYY-MM-DD'), TO_DATE('2024-10-30', 'YYYY-MM-DD'), 2, 2);
 
 -- Teszt adatok az Elõjegyzések táblához
-INSERT INTO elojegyzesek (foglalo_olvaso, foglalas_datum, foglalas_allapota, teljesules_datum, konyv_id)
-VALUES (1002, TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Aktív', NULL, 1);
-INSERT INTO elojegyzesek (elojegyzes_id, foglalo_olvaso, foglalas_datum, foglalas_allapota, teljesules_datum, konyv_id)
-VALUES (1001, TO_DATE('2024-10-20', 'YYYY-MM-DD'), 'Teljesült', TO_DATE('2024-10-25', 'YYYY-MM-DD'), 3);
+INSERT INTO elojegyzes (foglalo_olvaso, foglalas_datum, foglalas_allapota, teljesules_datum, konyv_id)
+VALUES (1, TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Aktív', NULL, 1);
+INSERT INTO elojegyzes (foglalo_olvaso, foglalas_datum, foglalas_allapota, teljesules_datum, konyv_id)
+VALUES (2, TO_DATE('2024-10-20', 'YYYY-MM-DD'), 'Teljesült', TO_DATE('2024-10-25', 'YYYY-MM-DD'), 3);
 
 -- Teszt adatok a Tartozás táblához
-INSERT INTO tartozas (olvaso_id, konyv_id, tartozas_merteke, tartozas_teljesulese)
-VALUES (1, 500, TO_DATE('2024-11-15', 'YYYY-MM-DD'));
 INSERT INTO tartozas (olvaso_szam, konyv_id, tartozas_merteke, tartozas_teljesulese)
-VALUES (2, 1000, NULL);
+VALUES (1, 3, 500, TO_DATE('2024-11-15', 'YYYY-MM-DD'));
+INSERT INTO tartozas (olvaso_szam, konyv_id, tartozas_merteke, tartozas_teljesulese)
+VALUES (2, 1, NULL);
