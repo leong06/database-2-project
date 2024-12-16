@@ -53,33 +53,6 @@ BEGIN
     :NEW.tartozas_id := tartozas_id_seq.NEXTVAL;
 END;
 
-
--- Kölcsönzési elõzmények rögzítése
-
-
-CREATE OR REPLACE TRIGGER KolcsonzesiElozmeny_Trigger
-AFTER INSERT OR UPDATE ON kolcsonzes
-FOR EACH ROW
-BEGIN
-    -- Könyv kikölcsönzése esetén
-    IF INSERTING THEN
-        olvaso_pkg.HandleInsert(
-            kolcsonzo_olvaso => :NEW.kolcsonzo_olvaso,
-            konyv_id => :NEW.konyv_id,
-            kolcsonzes_idopont => :NEW.kolcsonzes_idopont
-        );
-    END IF;
-
-    -- Könyv visszahozása esetén
-    IF UPDATING AND :NEW.visszahozatal_idopont IS NOT NULL THEN
-        olvaso_pkg.HandleUpdate(
-            kolcsonzo_olvaso => :NEW.kolcsonzo_olvaso,
-            konyv_id => :NEW.konyv_id,
-            visszahozatal_idopont => :NEW.visszahozatal_idopont
-        );
-    END IF;
-END KolcsonzesiElozmeny_Trigger;
-
 -- Kölcsönzés állapota frissítése
 CREATE OR REPLACE TRIGGER UpdateKolcsozve
 BEFORE UPDATE OF visszahozatal_idopont ON Kolcsonzes

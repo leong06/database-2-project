@@ -23,9 +23,9 @@ END;
 
 -- 2. A könyv kölcsönözhetõ
 BEGIN
-    konyvek_pkg.kolcsonzes(
-        p_konyv_id => 3,
-        p_olvaso_id => 1001
+    konyv_pkg.kolcsonzes(
+        p_konyv_id => 2,
+        p_olvaso_id => 2
     );
 END;
 
@@ -40,9 +40,9 @@ END;
 
 -- Könyv visszahozása:
 BEGIN
-    konyvek_pkg.visszahozas(
+    konyv_pkg.visszahozas(
         p_konyv_id => 2,
-        p_olvaso_id => 1002
+        p_olvaso_id => 2
     );
 END;
 /
@@ -58,13 +58,6 @@ END;
 
 
 
-SELECT * FROM kolcsonzesek
-SELECT * FROM elojegyzesek
-DELETE FROM elojegyzesek
-SELECT * FROM kolcsonzesi_elozmenyek
-SELECT * FROM tartozas
-SELECT * FROM konyv
-SELECT * FROM beiratkozott_olvaso
 
 
 

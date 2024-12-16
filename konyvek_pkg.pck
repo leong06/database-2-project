@@ -93,6 +93,12 @@ CREATE OR REPLACE PACKAGE BODY konyv_pkg IS
       ,p_olvaso_id
       ,SYSDATE
       ,SYSDATE + 30);
+      
+      olvaso_pkg.HandleInsert(
+        kolcsonzo_olvaso => p_olvaso_id,
+        konyv_id => p_konyv_id,
+        kolcsonzes_idopont => SYSDATE
+    );
   
     UPDATE konyv
        SET elerheto_peldanyszam = elerheto_peldanyszam - 1
@@ -179,7 +185,7 @@ CREATE OR REPLACE PACKAGE BODY konyv_pkg IS
     -- Ellenõrzés: Az olvasó valóban kikölcsönözte-e a könyvet
     SELECT esedekesseg_idopont
       INTO v_esedekesseg_datum
-      FROM kolcsonzesek
+      FROM kolcsonzes
      WHERE konyv_id = p_konyv_id
        AND kolcsonzo_olvaso = p_olvaso_id
        AND visszahozatal_idopont IS NULL;
@@ -223,6 +229,13 @@ CREATE OR REPLACE PACKAGE BODY konyv_pkg IS
     ELSE
       dbms_output.put_line('Könyv idõben visszahozva, nincs késedelmi díj.');
     END IF;
+    
+    -- Kölcsönzési elõzmény rögzítése
+    olvaso_pkg.HandleUpdate(
+        kolcsonzo_olvaso => p_olvaso_id,
+        konyv_id => p_konyv_id,
+        visszahozatal_idopont => SYSDATE
+    );
   
   EXCEPTION
     WHEN no_data_found THEN

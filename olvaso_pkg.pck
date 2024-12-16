@@ -51,6 +51,33 @@ PROCEDURE get_kolcsonzesi_elozmeny(p_olvaso_szam IN NUMBER, p_elozmeny OUT Kolcs
                            ' | Visszahozatal: ' || NVL(TO_CHAR(p_elozmeny(i).visszahozatal_idopont, 'YYYY-MM-DD'), 'Nincs visszahozva'));
     END LOOP;
   END get_kolcsonzesi_elozmeny;
+  
+  CREATE OR REPLACE PROCEDURE HandleKolcsonzesiElozmeny(
+    p_is_inserting BOOLEAN,
+    p_kolcsonzo_olvaso NUMBER,
+    p_konyv_id NUMBER,
+    p_kolcsonzes_idopont DATE,
+    p_visszahozatal_idopont DATE
+) IS
+BEGIN
+    -- Könyv kikölcsönzése esetén
+    IF p_is_inserting THEN
+        olvaso_pkg.HandleInsert(
+            kolcsonzo_olvaso => p_kolcsonzo_olvaso,
+            konyv_id => p_konyv_id,
+            kolcsonzes_idopont => p_kolcsonzes_idopont
+        );
+    END IF;
+
+    -- Könyv visszahozása esetén
+    IF NOT p_is_inserting AND p_visszahozatal_idopont IS NOT NULL THEN
+        olvaso_pkg.HandleUpdate(
+            kolcsonzo_olvaso => p_kolcsonzo_olvaso,
+            konyv_id => p_konyv_id,
+            visszahozatal_idopont => p_visszahozatal_idopont
+        );
+    END IF;
+END HandleKolcsonzes;
 
 -- Kölcsönzési elõzmények rögzítése
 
