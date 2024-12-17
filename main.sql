@@ -52,7 +52,12 @@ CREATE TABLE konyv (
     mufaj VARCHAR2(50),
     kiado VARCHAR2(100),
     megjelenes_eve NUMBER(4),
-    elerheto_peldanyszam NUMBER NOT NULL CHECK (elerheto_peldanyszam >= 0)
+    elerheto_peldanyszam NUMBER NOT NULL CHECK (elerheto_peldanyszam >= 0),
+    mod_user varchar2(300),
+    created_on timestamp,
+    last_mod timestamp,
+    DML_FLAG varchar2(1), -- I,U,D
+    version number
 );
 
 -- 3. Kölcsönzések
